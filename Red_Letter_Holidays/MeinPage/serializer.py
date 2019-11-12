@@ -5,6 +5,7 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate, login
 from django.core import exceptions 
 import random
+from .models import *
 
 User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
@@ -59,6 +60,18 @@ class Reset(serializers.ModelSerializer):
 	class Meta:
 		model=Token_data
 		fields=('email',)
+	def validate(self,data):
+		email_get=data.get('email')
+
+		if email_get:
+			try:
+				x=User.objects.get(email=email_get)
+				y={'user':x}
+				return y
+			except:
+				raise exceptions.ValidationError('Invalid e-mial address')
+		else:
+			raise exceptions.ValidationError('Please fill the email field')
 
 	def create(self, validated_data):
 		return Token_data.objects.create(**validated_data)
@@ -68,6 +81,28 @@ class Reset_token(serializers.ModelSerializer):
 		model=Token_data
 		fields='__all__'
 
+	def validate(self,data):
+		token=data.get('token')
+		password=data.get('password')
+		if token and password:
+			try:
+				x=Token_data.objects.get(reset_token=token)
+				user={'user':x.user,'new_password':password}
+				return user
+			except:
+				raise exceptions.ValidationError('invalid otp')
+		else:
+			raise exceptions.ValidationError('fill all the fields')
+
+class HotelSerelizer(serializers.ModelSerializer):
+	class Meta:
+		model=Hotel
+		fields='__all__'
+
+class PackageSerelizer(serializers.ModelSerializer):
+	class Meta:
+		model=Package
+		fields='__all__'
 
 		
 

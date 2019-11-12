@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
+from .models import *
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated  # <-- Here
@@ -25,6 +26,10 @@ import os
 from rest_framework import generics
 import os
 from sendgrid import SendGridAPIClient
+from braces.views import CsrfExemptMixin
+from rest_framework import viewsets
+
+
 from sendgrid.helpers.mail import Mail
 
 
@@ -35,13 +40,14 @@ from sendgrid.helpers.mail import Mail
 
            
 class Data(APIView):
-	permission_classes = (TokenAuthentication,)  
+	authentication_classes=[SessionAuthentication, BasicAuthentication]
+	permission_classes = (IsAuthenticated,)  
 	def get(self,request):
 		data=User.objects.all()
 		name= UserObjects(data, many=True)
 		return Response(name.data)
 
-class UserCreateAPIView(generics.CreateAPIView):
+class UserCreateAPIView(CsrfExemptMixin,generics.CreateAPIView):
 	serializer_class = UserSerializer
 
 	def create(self, request, *args, **kwargs):
@@ -84,7 +90,7 @@ class LoginData(APIView):
 		token, _ = Token.objects.get_or_create(user=objectuser)
 		return Response({'token':token.key,},status=status.HTTP_200_OK)
 
-class Reset_Password(APIView):
+class Reset_Password(CsrfExemptMixin,APIView):
 	
 
 	def post(self,request):
@@ -94,9 +100,12 @@ class Reset_Password(APIView):
 		serelize.is_valid(raise_exception=True)
 		print(serelize.validated_data)
 		#import pdb;pdb.set_trace()
+		print('ok')
 		
-		user_data=User.objects.get(email=serelize.validated_data['email'])
-		serelize.save(user=user_data,reset_token=x)
+		user_data=serelize.validated_data['user']
+		#import pdb;pdb.set_trace()
+
+		serelize.save(user=user_data,reset_token=str(x))
 		
 		message = Mail(
 		from_email='priyambajpai.liseinfotech@gmail.com',
@@ -114,12 +123,28 @@ class Reset_Password(APIView):
 		
 	
 
-#class Valid_token(APIView):
-#	def patch(self,request):
-#		x=Reset_token(valid=True)
-#		x.is_valid(raise_exception=True)
-#		x.save()
-#		return Response({'token':'Token is valid'})
+class Valid_token(APIView):
+	def post(self,request):
+		x=Reset_token(data=request.GET)
+		x.is_valid(raise_exception=True)
+		validated=x.validated_data['user']
+		user_instance=validated.user
+		model=user_instance.set_password(x.validated_data['password'])
+		model.save()
+
+
+		return Response({'password':'password has been changed successfully'})
+
+class HotelView(viewsets.ModelViewSet):
+	queryset=Hotel.objects.all()
+	serializer_class=HotelSerelizer
+	
+
+
+class PackageView(viewsets.ModelViewSet):
+	queryset=Package.objects.all()
+	serializer_class=PackageSerelizer
+	
 
 
 
