@@ -7,6 +7,7 @@ router.register('hotel',HotelView)
 hotel_list=HotelView.as_view({
 	'get':'list',
 	'post':'create',
+	
 
 	})
 hotel_data=HotelView.as_view({
