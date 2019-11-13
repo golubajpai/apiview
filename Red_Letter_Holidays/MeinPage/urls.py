@@ -40,5 +40,6 @@ urlpatterns = [
 	path('packages/',package_list,name='packages'),
 	path('packages/<int:pk>/',packages_data,name='packages'),
 	path('viewhotel/<int:pk>/',hotel_data,name='viewhotel'),
+	path('sociallogin/',Google_Facebook_login.as_view(),name='sociallogin')
 
 ]

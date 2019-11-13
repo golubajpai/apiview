@@ -40,8 +40,8 @@ from sendgrid.helpers.mail import Mail
 
            
 class Data(APIView):
-	authentication_classes=[SessionAuthentication, BasicAuthentication]
-	permission_classes = (IsAuthenticated,)  
+	permission_classes = (IsAuthenticated,)
+
 	def get(self,request):
 		data=User.objects.all()
 		name= UserObjects(data, many=True)
@@ -57,8 +57,8 @@ class UserCreateAPIView(CsrfExemptMixin,generics.CreateAPIView):
 		self.perform_create(serializer)
 		
 		token, created = Token.objects.get_or_create(user=serializer.instance)
-		return Response({'token': token.key,'message':"User logged in successfully"
-}, status=status.HTTP_201_CREATED)
+		return Response({'token': token.key,'message':"User Created successfully"
+}, status=status.HTTP_201_CREATED,headers={"Access-Control-Allow-Origin":"*"})
 		
 
 class Logout(APIView):
@@ -88,7 +88,7 @@ class LoginData(APIView):
 		#import pdb;pdb.set_trace()
 		login(request,objectuser)
 		token, _ = Token.objects.get_or_create(user=objectuser)
-		return Response({'token':token.key,},status=status.HTTP_200_OK)
+		return Response({'token':token.key,},status=status.HTTP_200_OK,headers={"Access-Control-Allow-Origin":"*"})
 
 class Reset_Password(CsrfExemptMixin,APIView):
 	
@@ -119,7 +119,7 @@ class Reset_Password(CsrfExemptMixin,APIView):
 			return Response({"message sent":msg},status=status.HTTP_200_OK)
 
 		except Exception as e:
-			return Response({"message sent":'can not reset password right now'},status=404)
+			return Response({"message sent":'can not reset password right now'},status=404,headers={"Access-Control-Allow-Origin":"*"})
 		
 	
 
@@ -133,7 +133,7 @@ class Valid_token(APIView):
 		model.save()
 
 
-		return Response({'password':'password has been changed successfully'})
+		return Response({'password':'password has been changed successfully'},headers={"Access-Control-Allow-Origin":"*"})
 
 class HotelView(viewsets.ModelViewSet):
 	queryset=Hotel.objects.all()
@@ -144,6 +144,43 @@ class HotelView(viewsets.ModelViewSet):
 class PackageView(viewsets.ModelViewSet):
 	queryset=Package.objects.all()
 	serializer_class=PackageSerelizer
+
+class Google_Facebook_login(APIView):
+	def post(self,request):
+		x=GoogleSerelizer(data=request.data)
+		#import pdb ;pdb.set_trace() 
+		x.is_valid(raise_exception=True)
+		#import pdb ;pdb.set_trace()
+		
+		if 'user' in x.validated_data:
+			k=x.validated_data['token']
+			objectuser=x.validated_data['user']
+			n=UserSerializer(x.validated_data['objects'])
+			#token=Token.objects.get(user=x.validated_data['objects'])
+			#token.key=k
+			#token.save()
+			Token.objects.filter(user=x.validated_data['objects']).update(key=k)
+
+			
+			
+			return Response({'token':k,'message':'user logged in successfully','user':n.data}, status=status.HTTP_201_CREATED,headers={"Access-Control-Allow-Origin":"*"})
+		else:
+			y=SocialSerializer(data=request.data)
+
+			y.is_valid(raise_exception=True)
+			y.save()
+			#import pdb ;pdb.set_trace()
+			
+			return Response({'token':y.validated_data['token'],'message':"User Created successfully"
+}, status=status.HTTP_201_CREATED,headers={"Access-Control-Allow-Origin":"*"})
+
+			
+
+
+
+
+
+
 	
 
 

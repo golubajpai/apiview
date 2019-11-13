@@ -37,10 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'MeinPage',
     'rest_framework',
     'rest_framework.authtoken',
-    'corsheaders',
+    
      'django_rest_passwordreset',
      'sendgrid',
 

@@ -8,6 +8,32 @@ import random
 from .models import *
 
 User = get_user_model()
+class SocialSerializer(serializers.ModelSerializer):
+    token=serializers.CharField(write_only=True)
+    
+
+    class Meta:
+        model = User
+        fields = '__all__'
+    def validate(self,data):
+
+    	token=data.get('token')
+    	#import pdb;pdb.set_trace()
+    	x=data.pop('token')
+    	if not x:
+    		raise exceptions.ValidationError('token not found')
+    	else:
+    		return {'data':data,'token':x}
+
+    def create(self,validated_data):
+    	User=super(SocialSerializer,self).create(validated_data['data'])
+    	User.set_unusable_password()
+    	User.save()
+
+    	#import pdb;pdb.set_trace()
+    	token = Token.objects.create(user=User,key=validated_data['token'])
+    	
+    	return (User,token)
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
@@ -104,7 +130,33 @@ class PackageSerelizer(serializers.ModelSerializer):
 		model=Package
 		fields='__all__'
 
+
+
 		
+class GoogleSerelizer(serializers.Serializer):
+	token=serializers.CharField(write_only=True)
+	email=serializers.CharField(write_only=True)
+	class Meta:
+		model=User
+		filds='__all__'
+
+	def validate(self,data):
+		email=data.get('email')
+		#import pdb;pdb.set_trace()
+		token=data.get('token')
+		if email and token:
+			try:
+				user=User.objects.filter(email=email).exists()
+				objects=User.objects.get(email=email)
+				x={'user':user,'token':token,'objects':objects}
+				return x
+			except:
+				
+				
+				return {'data':data}
+		else:
+			raise exceptions.ValidationError('token not found')
+
 
 		
 
