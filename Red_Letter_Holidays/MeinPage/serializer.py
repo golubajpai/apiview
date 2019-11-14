@@ -7,6 +7,9 @@ from django.core import exceptions
 import random
 from .models import *
 
+class Serelizer(serializers.Serializer):
+	pass
+
 User = get_user_model()
 class SocialSerializer(serializers.ModelSerializer):
     token=serializers.CharField(write_only=True)
@@ -119,16 +122,32 @@ class Reset_token(serializers.ModelSerializer):
 				raise exceptions.ValidationError('invalid otp')
 		else:
 			raise exceptions.ValidationError('fill all the fields')
+class HotelImageSerializer(serializers.ModelSerializer):
+	image_id=serializers.PrimaryKeyRelatedField(queryset=Hotel.objects.all(),source='image_hotel.id')
+	class Meta:
+		model=HotelImage
+		fields=('image_data','image_id',)
+class PackageImage(serializers.ModelSerializer):
+	image_id=serializers.PrimaryKeyRelatedField(queryset=Package.objects.all(),source='image_package.id')
+	class Meta:
+		model=HotelImage
+		fields=('image_data','image_id',)
 
 class HotelSerelizer(serializers.ModelSerializer):
+	hotel=serializers.PrimaryKeyRelatedField(queryset=Package.objects.all(),source='package.id')
+	image_hotel=HotelImageSerializer(many=True)
 	class Meta:
 		model=Hotel
-		fields='__all__'
+		fields=('hotel_name','hotel_address','room_type','inclusive','meal_type','amenities','price','image_hotel','hotel')
 
 class PackageSerelizer(serializers.ModelSerializer):
+	package=HotelSerelizer(many=True)
 	class Meta:
 		model=Package
-		fields='__all__'
+		fields=('Cities','Country','Totel_prise','Meal_included','Activities_include','Itnerary','Company_details'
+			,'Transfer_detail','Freebies','seperate_sic_or_private'
+			,'Start_date','End_date', 'Flight_inbound','Flight_outbound' ,'Flight_prise','Land_prise','package')
+			
 
 
 

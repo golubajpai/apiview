@@ -68,19 +68,10 @@ class Token_data(models.Model):
     email=models.CharField(max_length=100)
     reset_token=models.CharField(max_length=6)
     time=models.TimeField(auto_now=True)
-    #valid=models.BooleanField(default=False)
     user= models.ForeignKey(User, on_delete=models.CASCADE , related_name="books")
 
 
-class Hotel(models.Model):
-    hotel_name=models.CharField(max_length=255)
-    hotel_address=models.CharField(max_length=255)
-    room_type=models.CharField(max_length=255)
-    inclusive=models.CharField(max_length=255)
-    meal_type=models.CharField(max_length=255)
-    amenities=models.CharField(max_length=255)
-    price=models.CharField(max_length=255)
-    image=models.ImageField()
+
 
 class Package(models.Model):
     Cities=models.CharField(max_length=255)
@@ -92,11 +83,9 @@ class Package(models.Model):
     Flight_prise=models.CharField(max_length=255)
     Land_prise=models.CharField(max_length=255)
     Totel_prise=models.CharField(max_length=255)
-    Hotels=models.ForeignKey(Hotel, on_delete=models.CASCADE)
     Meal_included=models.CharField(max_length=255)
     Activities_include=models.CharField(max_length=255)
     Visa_included=models.CharField(max_length=255)
-    Meal_included=models.CharField(max_length=255)
     Acivities_included=models.CharField(max_length=255)
     Exclusive=models.CharField(max_length=255)
     Meal_included=models.CharField(max_length=255)
@@ -106,5 +95,33 @@ class Package(models.Model):
     Freebies=models.CharField(max_length=255)
     Transfer_detail_seperate=models.CharField(max_length=255)
     seperate_sic_or_private=models.CharField(max_length=255)
+    discount=models.CharField(max_length=255)
+    category=models.CharField(max_length=255)
+    duration=models.CharField(max_length=255)
+    hot_deal_package=models.CharField(max_length=255)
+
+
+    def __str__(self):
+        return '%s: %s' % (self.Cities, self.Country)
+class PackageImage(models.Model):
+    image_package=models.ForeignKey(Package,related_name='image_package',on_delete=models.CASCADE)
+    image_data=models.ImageField()
+
+
+class Hotel(models.Model):
+    hotel_name=models.CharField(max_length=255)
+    hotel_address=models.CharField(max_length=255)
+    room_type=models.CharField(max_length=255)
+    inclusive=models.CharField(max_length=255)
+    meal_type=models.CharField(max_length=255)
+    amenities=models.CharField(max_length=255)
+    price=models.CharField(max_length=255)
+    package=models.ForeignKey(Package,related_name='package', on_delete=models.CASCADE)
     image=models.ImageField()
 
+    def __str__(self):
+        return '%s: %s' % (self.hotel_name, self.hotel_address)
+
+class HotelImage(models.Model):
+    image_hotel=models.ForeignKey(Hotel,related_name='image_hotel',on_delete=models.CASCADE)
+    image_data=models.ImageField()

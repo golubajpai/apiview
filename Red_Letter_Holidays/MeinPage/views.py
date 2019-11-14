@@ -138,12 +138,22 @@ class Valid_token(APIView):
 class HotelView(viewsets.ModelViewSet):
 	queryset=Hotel.objects.all()
 	serializer_class=HotelSerelizer
+
+	
+
+
+
+
 	
 
 
 class PackageView(viewsets.ModelViewSet):
 	queryset=Package.objects.all()
 	serializer_class=PackageSerelizer
+	paginate_by = 1
+
+  
+
 
 class Google_Facebook_login(APIView):
 	def post(self,request):
