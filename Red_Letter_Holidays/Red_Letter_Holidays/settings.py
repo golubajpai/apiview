@@ -25,7 +25,7 @@ SECRET_KEY = 'c1ld_4#sxx@p2!p*#s-slq*5jg$c7eai%0_f1(^2(p#mn%l^(5'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['apisgolu.herokuapp.com']
 
 
 # Application definition
