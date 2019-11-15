@@ -134,19 +134,21 @@ class PackageImage(serializers.ModelSerializer):
 		fields=('image_data','image_id',)
 
 class HotelSerelizer(serializers.ModelSerializer):
-	hotel=serializers.PrimaryKeyRelatedField(queryset=Package.objects.all(),source='package.id')
+	hotel=serializers.PrimaryKeyRelatedField(queryset=Package.objects.all(),source='hotel.id')
 	image_hotel=HotelImageSerializer(many=True)
 	class Meta:
 		model=Hotel
-		fields=('hotel_name','hotel_address','room_type','inclusive','meal_type','amenities','price','image_hotel','hotel')
+		fields=('city','hotel_name','hotel_address','room_type','inclusive','meal_type','amenities','price','image_hotel','hotel')		
 
 class PackageSerelizer(serializers.ModelSerializer):
-	package=HotelSerelizer(many=True)
+	hotel=HotelSerelizer(many=True)
+	image_package=PackageImage(many=True)
+
 	class Meta:
 		model=Package
 		fields=('Cities','Country','Totel_prise','Meal_included','Activities_include','Itnerary','Company_details'
-			,'Transfer_detail','Freebies','seperate_sic_or_private'
-			,'Start_date','End_date', 'Flight_inbound','Flight_outbound' ,'Flight_prise','Land_prise','package')
+			,'Transfer_detail','Freebies','seperate_sic_or_private','image_package'
+			,'Start_date','End_date', 'Flight_inbound','Flight_outbound' ,'Flight_prise','Land_prise','hotel')
 			
 
 

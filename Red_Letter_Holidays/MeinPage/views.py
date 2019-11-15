@@ -2,6 +2,8 @@ from django.shortcuts import render
 
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin
+#
+
 
 # Create your views here.
 from .models import *
@@ -28,6 +30,7 @@ import os
 from sendgrid import SendGridAPIClient
 from braces.views import CsrfExemptMixin
 from rest_framework import viewsets
+import json
 
 
 from sendgrid.helpers.mail import Mail
@@ -135,25 +138,64 @@ class Valid_token(APIView):
 
 		return Response({'password':'password has been changed successfully'},headers={"Access-Control-Allow-Origin":"*"})
 
+
 class HotelView(viewsets.ModelViewSet):
-	queryset=Hotel.objects.all()
+	#queryset=Hotel.objects.all()
 	serializer_class=HotelSerelizer
 
+	def perfome_create(self,serializer):
+		obj=serializer.save()
+		for x in self.request.data.getlist('image'):
+			mf=MyFile.obj.create(image=x)
+			obj.image.add(mf)
+	def get_queryset(self):
+		a=[]
+		
+		try:
+			y=self.request.GET['hotel']
+			##import pdb;pdb.set_trace()
+
+			if y:
+				data  = json.loads(y)
+				
+				for x in data:
+					print(x)
+					
+
+					query=Hotel.objects.filter(city=x)
+					a.append(query)
+				return a
+		except:
+			query=Hotel.objects.all()
+			return query
+
 	
 
 
 
 
 	
-
 
 class PackageView(viewsets.ModelViewSet):
-	queryset=Package.objects.all()
+	
 	serializer_class=PackageSerelizer
-	paginate_by = 1
+
+	def get_queryset(self):
+	 	query=Package.objects.all()
+	 	return query
+
+
+
+		
+
 
   
+class Get_hot_deals(viewsets.ModelViewSet):
+	serializer_class=PackageSerelizer
 
+	def get_queryset(self,*args,**kwargs):
+		query=Package.objects.filter(hot_deal_package=True)
+		return query
 
 class Google_Facebook_login(APIView):
 	def post(self,request):
@@ -185,7 +227,6 @@ class Google_Facebook_login(APIView):
 }, status=status.HTTP_201_CREATED,headers={"Access-Control-Allow-Origin":"*"})
 
 			
-
 
 
 

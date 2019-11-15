@@ -98,7 +98,7 @@ class Package(models.Model):
     discount=models.CharField(max_length=255)
     category=models.CharField(max_length=255)
     duration=models.CharField(max_length=255)
-    hot_deal_package=models.CharField(max_length=255)
+    hot_deal_package=models.BooleanField()
 
 
     def __str__(self):
@@ -109,6 +109,7 @@ class PackageImage(models.Model):
 
 
 class Hotel(models.Model):
+    city=models.CharField(max_length=200)
     hotel_name=models.CharField(max_length=255)
     hotel_address=models.CharField(max_length=255)
     room_type=models.CharField(max_length=255)
@@ -116,7 +117,7 @@ class Hotel(models.Model):
     meal_type=models.CharField(max_length=255)
     amenities=models.CharField(max_length=255)
     price=models.CharField(max_length=255)
-    package=models.ForeignKey(Package,related_name='package', on_delete=models.CASCADE)
+    hotel=models.ForeignKey(Package,related_name='hotel', on_delete=models.CASCADE)
     image=models.ImageField()
 
     def __str__(self):
