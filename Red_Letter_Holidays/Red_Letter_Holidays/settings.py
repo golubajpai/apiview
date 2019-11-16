@@ -25,8 +25,7 @@ SECRET_KEY = 'c1ld_4#sxx@p2!p*#s-slq*5jg$c7eai%0_f1(^2(p#mn%l^(5'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['apisgolu.herokuapp.com']
-
+ALLOWED_HOSTS = ['apisgolu.herokuapp.com', '127.0.0.1']
 
 # Application definition
 
@@ -46,6 +45,7 @@ INSTALLED_APPS = [
      'sendgrid',
 
 ]
+AUTH_USER_MODEL='MeinPage.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -85,7 +85,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Red_Letter_Holidays.wsgi.application'
 
-AUTH_USER_MODEL='MeinPage.User'
+
 
 
 

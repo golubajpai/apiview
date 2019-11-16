@@ -5,6 +5,7 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate, login
 from django.core import exceptions 
 import random
+
 from .models import *
 
 class Serelizer(serializers.Serializer):
@@ -122,35 +123,53 @@ class Reset_token(serializers.ModelSerializer):
 				raise exceptions.ValidationError('invalid otp')
 		else:
 			raise exceptions.ValidationError('fill all the fields')
+class HotelImages(serializers.ModelSerializer):
+	class Meta:
+		model=HotelImage
+		fields='__all__'
+class HotelCity(serializers.ModelSerializer):
+	class Meta:
+		model=Hotel_cities
+		fields='__all__'
+
 class HotelImageSerializer(serializers.ModelSerializer):
 	image_id=serializers.PrimaryKeyRelatedField(queryset=Hotel.objects.all(),source='image_hotel.id')
 	class Meta:
 		model=HotelImage
 		fields=('image_data','image_id',)
+
 class PackageImage(serializers.ModelSerializer):
 	image_id=serializers.PrimaryKeyRelatedField(queryset=Package.objects.all(),source='image_package.id')
 	class Meta:
 		model=HotelImage
 		fields=('image_data','image_id',)
 
+
 class HotelSerelizer(serializers.ModelSerializer):
-	hotel=serializers.PrimaryKeyRelatedField(queryset=Package.objects.all(),source='hotel.id')
+	hotel=serializers.PrimaryKeyRelatedField(queryset=Package.objects.all(),source='id')
 	image_hotel=HotelImageSerializer(many=True)
+	hotel_city=HotelCity(many=True)
 	class Meta:
 		model=Hotel
-		fields=('city','hotel_name','hotel_address','room_type','inclusive','meal_type','amenities','price','image_hotel','hotel')		
+		fields=('hotel','hotel_name','hotel_city','hotel_address','room_type','inclusive','meal_type','amenities','price','image_hotel')		
 
+class Package_city(serializers.ModelSerializer):
+	#city=serializers.PrimaryKeyRelatedField(queryset=Package_city.objects.all(),source='package_city')
+	class Meta:
+		model=Package_city
+		fields='__all__'
 class PackageSerelizer(serializers.ModelSerializer):
+
 	hotel=HotelSerelizer(many=True)
+	package_city=Package_city(many=True)
 	image_package=PackageImage(many=True)
 
 	class Meta:
 		model=Package
-		fields=('Cities','Country','Totel_prise','Meal_included','Activities_include','Itnerary','Company_details'
+		fields=('Package_name','package_city','Country','Totel_prise','Meal_included','Activities_include','Itnerary','Company_details'
 			,'Transfer_detail','Freebies','seperate_sic_or_private','image_package'
 			,'Start_date','End_date', 'Flight_inbound','Flight_outbound' ,'Flight_prise','Land_prise','hotel')
 			
-
 
 
 		

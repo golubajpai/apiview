@@ -30,6 +30,19 @@ packages_data=PackageView.as_view({
 get_hot_deals=Get_hot_deals.as_view({
 	'get':'list'
 	})
+Hotel_image=Hotel_Image.as_view({
+	'get':'list',
+	'post':'create'
+	})
+Hotel_image_spacific=Hotel_Image.as_view({
+	'get':'retrieve',
+	'put':'update',
+	'patch':'partial_update',
+	'delete':'destroy'
+	
+
+
+	})
 
 
 urlpatterns = [
@@ -46,6 +59,8 @@ urlpatterns = [
 	path('viewhotel/<int:pk>/',hotel_data,name='viewhotel'),
 
 	path('sociallogin/',Google_Facebook_login.as_view(),name='sociallogin'),
-	path('getHotDeals/',get_hot_deals,name='Gethotdeals')
+	path('getHotDeals/',get_hot_deals,name='Gethotdeals'),
+	path('hotelimagespacific/<int:pk>',Hotel_image_spacific,name='gethotelimagespacific'),
+	path('gethotelimage/',Hotel_image,name='Gethotelimage')
 
 ]

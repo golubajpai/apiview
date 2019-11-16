@@ -31,10 +31,19 @@ from sendgrid import SendGridAPIClient
 from braces.views import CsrfExemptMixin
 from rest_framework import viewsets
 import json
-
+from rest_framework import pagination
 
 from sendgrid.helpers.mail import Mail
 
+class LargeResultsSetPagination(pagination.PageNumberPagination):
+    page_size = 20
+    page_size_query_param = 'page_size'
+    max_page_size = 10000
+
+class StandardResultsSetPagination(pagination.PageNumberPagination):
+    page_size = 100
+    page_size_query_param = 'page_size'
+    max_page_size = 1000
 
 
 
@@ -140,53 +149,37 @@ class Valid_token(APIView):
 
 
 class HotelView(viewsets.ModelViewSet):
-	#queryset=Hotel.objects.all()
+	queryset=Hotel.objects.all()
 	serializer_class=HotelSerelizer
 
-	def perfome_create(self,serializer):
-		obj=serializer.save()
-		for x in self.request.data.getlist('image'):
-			mf=MyFile.obj.create(image=x)
-			obj.image.add(mf)
-	def get_queryset(self):
-		a=[]
-		
-		try:
-			y=self.request.GET['hotel']
-			##import pdb;pdb.set_trace()
-
-			if y:
-				data  = json.loads(y)
-				
-				for x in data:
-					print(x)
-					
-
-					query=Hotel.objects.filter(city=x)
-					a.append(query)
-				return a
-		except:
-			query=Hotel.objects.all()
-			return query
 
 	
 
 
 
-
+class Hotel_Image(viewsets.ModelViewSet):
+	serializer_class=HotelImages
+	queryset=HotelImage.objects.all()
 	
 
 class PackageView(viewsets.ModelViewSet):
 	
 	serializer_class=PackageSerelizer
+	pagination_class = LargeResultsSetPagination
+	paginate_by = 20
+
 
 	def get_queryset(self):
-	 	query=Package.objects.all()
-	 	return query
+		if 'search' in self.request.GET:
+			a=self.request.GET['search']
+			queryset = Package.objects.filter(package_city__package_city__contains=a) | Package.objects.filter(Country__contains=a) | Package.objects.filter(Package_name__contains=a)
+			#import pdb;pdb.set_trace()
+			print(queryset)
+			return queryset
+		else:
+			return Package.objects.all()
 
 
-
-		
 
 
   
