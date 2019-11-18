@@ -1,56 +1,13 @@
-from django.shortcuts import render
+from .authantication import *
 
-from django.shortcuts import render
-from django.contrib.auth.mixins import LoginRequiredMixin
-#
-
-
-# Create your views here.
-from .models import *
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated  # <-- Here
-from .serializer import *
-from django.http import JsonResponse
-from django.contrib.auth import get_user_model
-from django.contrib.auth import authenticate, login ,logout
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework import status
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication,TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
-import os
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
-from django.core import exceptions 
-import random
-import os
-from rest_framework import generics
-import os
-from sendgrid import SendGridAPIClient
-from braces.views import CsrfExemptMixin
-from rest_framework import viewsets
-import json
-from rest_framework import pagination
-
-from sendgrid.helpers.mail import Mail
-
-class LargeResultsSetPagination(pagination.PageNumberPagination):
-    page_size = 20
-    page_size_query_param = 'page_size'
-    max_page_size = 10000
-
-class StandardResultsSetPagination(pagination.PageNumberPagination):
-    page_size = 100
-    page_size_query_param = 'page_size'
-    max_page_size = 1000
+ 
 
 
 
 
 
 
-           
+
 class Data(APIView):
 	permission_classes = (IsAuthenticated,)
 
@@ -58,6 +15,8 @@ class Data(APIView):
 		data=User.objects.all()
 		name= UserObjects(data, many=True)
 		return Response(name.data)
+
+
 
 class UserCreateAPIView(CsrfExemptMixin,generics.CreateAPIView):
 	serializer_class = UserSerializer
@@ -73,14 +32,16 @@ class UserCreateAPIView(CsrfExemptMixin,generics.CreateAPIView):
 }, status=status.HTTP_201_CREATED,headers={"Access-Control-Allow-Origin":"*"})
 		
 
+
 class Logout(APIView):
-    permission_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)  
     
     def get(self, request, format=None):
-        import pdb;pdb.set_trace()
+        #import pdb;pdb.set_trace()
         # simply delete the token to force a login
-        logout(request.user)
+        
         request.user.auth_token.delete()
+        
         return Response(status=status.HTTP_200_OK)
 
 	
@@ -97,10 +58,11 @@ class LoginData(APIView):
 		#import pdb; pdb.set_trace()
 		serelize.is_valid(raise_exception=True)
 		objectuser=serelize.validated_data
+		
+		
 		#import pdb;pdb.set_trace()
-		login(request,objectuser)
 		token, _ = Token.objects.get_or_create(user=objectuser)
-		return Response({'token':token.key,},status=status.HTTP_200_OK,headers={"Access-Control-Allow-Origin":"*"})
+		return Response({'token':token.key,'message':'User login successfully'},status=status.HTTP_200_OK,headers={"Access-Control-Allow-Origin":"*"})
 
 class Reset_Password(CsrfExemptMixin,APIView):
 	
@@ -145,12 +107,26 @@ class Valid_token(APIView):
 		model.save()
 
 
-		return Response({'password':'password has been changed successfully'},headers={"Access-Control-Allow-Origin":"*"})
+		return Response({'message':'password has been changed successfully'},status=status.HTTP_200_OK,headers={"Access-Control-Allow-Origin":"*"})
 
 
 class HotelView(viewsets.ModelViewSet):
+	
+	permission_classes = (IsAdminOrReadOnly,)
 	queryset=Hotel.objects.all()
-	serializer_class=HotelSerelizer
+	def get_serializer_class(self):
+		x=['create','update','partial_update','destroy']
+		if self.action in x:
+			return HotelSerelizerCreate
+		else:
+			return HotelSerelizer
+
+class HotelCityView(viewsets.ModelViewSet):
+	permission_classes=(IsAuthenticated,)
+	queryset=Hotel_cities.objects.all()
+	def get_serializer_class(self):
+		return HotelCitySeailizer
+
 
 
 	
@@ -158,11 +134,13 @@ class HotelView(viewsets.ModelViewSet):
 
 
 class Hotel_Image(viewsets.ModelViewSet):
+	permission_classes = (IsAdminOrReadOnly,)
 	serializer_class=HotelImages
 	queryset=HotelImage.objects.all()
 	
 
 class PackageView(viewsets.ModelViewSet):
+	permission_classes = (IsAdminOrReadOnly,)
 	
 	serializer_class=PackageSerelizer
 	pagination_class = LargeResultsSetPagination
@@ -170,8 +148,10 @@ class PackageView(viewsets.ModelViewSet):
 
 
 	def get_queryset(self):
+		
 		if 'search' in self.request.GET:
 			a=self.request.GET['search']
+			import pdb;pdb.set_trace()
 			queryset = Package.objects.filter(package_city__package_city__contains=a) | Package.objects.filter(Country__contains=a) | Package.objects.filter(Package_name__contains=a)
 			#import pdb;pdb.set_trace()
 			print(queryset)
@@ -184,7 +164,9 @@ class PackageView(viewsets.ModelViewSet):
 
   
 class Get_hot_deals(viewsets.ModelViewSet):
+	permission_classes = (IsAdminOrReadOnly,)
 	serializer_class=PackageSerelizer
+
 
 	def get_queryset(self,*args,**kwargs):
 		query=Package.objects.filter(hot_deal_package=True)

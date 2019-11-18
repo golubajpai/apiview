@@ -72,10 +72,6 @@ class Token_data(models.Model):
 
 
 
-
-
-
-
     def __str__(self):
         return '%s: %s' % (self.Cities, self.Country)
 
@@ -90,7 +86,7 @@ class Hotel(models.Model):
     amenities=models.CharField(max_length=255)
     price=models.CharField(max_length=255)
     
-    image=models.ImageField()
+    
 
     def __str__(self):
         return '%s: %s' % (self.hotel_name, self.hotel_address)
@@ -102,6 +98,7 @@ class Hotel_cities(models.Model):
 
 class Package(models.Model):
     Package_name=models.CharField(max_length=255)
+    Package_discription=models.TextField()
     Country=models.CharField(max_length=255)
     Start_date=models.CharField(max_length=255)
     End_date=models.CharField(max_length=255)
@@ -141,3 +138,5 @@ class HotelImage(models.Model):
 class PackageImage(models.Model):
     image_package=models.ForeignKey(Package,related_name='image_package',on_delete=models.CASCADE)
     image_data=models.ImageField()
+
+

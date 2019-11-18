@@ -8,6 +8,11 @@ import random
 
 from .models import *
 
+class HotelCitySeailizer(serializers.ModelSerializer):
+	class Meta:
+		model=Hotel_cities
+		fields='__all__'
+
 class Serelizer(serializers.Serializer):
 	pass
 
@@ -55,7 +60,11 @@ class UserSerializer(serializers.ModelSerializer):
 class UserObjects(serializers.ModelSerializer):
     class Meta:
     	model=User
-    	fields=('first_name','last_name','email','password')
+    	fields="__all__"
+class HotelSerelizerCreate(serializers.ModelSerializer):
+	class Meta:
+		model=Hotel
+		fields='__all__'
 
 
 

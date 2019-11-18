@@ -43,6 +43,18 @@ Hotel_image_spacific=Hotel_Image.as_view({
 
 
 	})
+hotel_city_get=HotelCityView.as_view({
+	'get':'list',
+	'post':'create',
+
+	})
+hotel_city=HotelCityView.as_view({
+	'get':'retrieve',
+	'put':'update',
+	'patch':'partial_update',
+	'delete':'destroy'
+
+	})
 
 
 urlpatterns = [
@@ -60,7 +72,10 @@ urlpatterns = [
 
 	path('sociallogin/',Google_Facebook_login.as_view(),name='sociallogin'),
 	path('getHotDeals/',get_hot_deals,name='Gethotdeals'),
-	path('hotelimagespacific/<int:pk>',Hotel_image_spacific,name='gethotelimagespacific'),
-	path('gethotelimage/',Hotel_image,name='Gethotelimage')
+	path('hotelimagespacific/<int:pk>/',Hotel_image_spacific,name='gethotelimagespacific'),
+	path('gethotelimage/',Hotel_image,name='Gethotelimage'),
+	path('gethotelimage/<int:pk>/',Hotel_image_spacific,name='Gethotelimage'),
+	path('gethotelcity/<int:pk>/',hotel_city,name='Gethotelimage'),
+	path('gethotelcity/',hotel_city_get,name='Gethotelimage')
 
 ]

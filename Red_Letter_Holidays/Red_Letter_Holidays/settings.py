@@ -43,9 +43,14 @@ INSTALLED_APPS = [
     
      'django_rest_passwordreset',
      'sendgrid',
+     'rest_framework_custom_exceptions',
 
 ]
 AUTH_USER_MODEL='MeinPage.User'
+
+REST_FRAMEWORK = {
+    'EXCEPTION_HANDLER': 'rest_framework_custom_exceptions.exceptions.simple_error_handler'
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
