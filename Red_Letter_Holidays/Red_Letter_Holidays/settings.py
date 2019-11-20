@@ -71,7 +71,7 @@ CORS_ALLOW_CREDENTIALS = True
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media') # 'data' is my media folder
 MEDIA_URL = '/media/'
 
-
+USE_TZ = False
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',

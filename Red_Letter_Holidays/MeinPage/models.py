@@ -100,7 +100,7 @@ class Package(models.Model):
     Package_name=models.CharField(max_length=255)
     Package_discription=models.TextField()
     Country=models.CharField(max_length=255)
-    Start_date=models.CharField(max_length=255)
+    Start_date=models.CharField(max_length=200)
     End_date=models.CharField(max_length=255)
     Flight_inbound=models.CharField(max_length=255)
     Flight_outbound=models.CharField(max_length=255)
@@ -108,17 +108,17 @@ class Package(models.Model):
     Land_price=models.CharField(max_length=255)
     Totel_price=models.CharField(max_length=255)
     Meal_included=models.CharField(max_length=255)
-    Activities_include=models.CharField(max_length=255)
+    
     Visa_included=models.CharField(max_length=255)
-    Acivities_included=models.CharField(max_length=255)
+    
     
     Meal_included=models.CharField(max_length=255)
     Itnerary=models.TextField()
     Company_details=models.CharField(max_length=255)
-    Transfer_detail=models.CharField(max_length=255)
+    Transfer_private=models.CharField(max_length=255)
     Freebies=models.CharField(max_length=255)
     Transfer_detail_seperate=models.CharField(max_length=255)
-    seperate_sic_or_private=models.CharField(max_length=255)
+    Transfesic=models.CharField(max_length=255)
     discount=models.CharField(max_length=255)
     category=models.CharField(max_length=255)
     duration=models.CharField(max_length=255)
@@ -127,6 +127,17 @@ class Package(models.Model):
 
     def __str__(self):
         return (self.Package_name)
+
+class Activities(models.Model):
+    package_id=models.ForeignKey(User,related_name='package_id',on_delete=models.CASCADE)
+    activities=models.CharField(max_length=255)
+
+class Booking(models.Model):
+    user=models.ForeignKey(User,related_name='userbooking',on_delete=models.CASCADE)
+    package=models.ForeignKey(Package,related_name='packageforuser',on_delete=models.CASCADE)
+    status=models.CharField(max_length=20,default='review')
+    completed=models.BooleanField(default=False)
+
 class Exclusions(models.Model):
     exclusion_package=models.ForeignKey(Package,related_name='exclusions',on_delete=models.CASCADE)
     excelusion_data=models.CharField(max_length=200)

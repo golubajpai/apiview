@@ -11,4 +11,5 @@ admin.site.register(HotelImage)
 admin.site.register(Package_city)
 admin.site.register(Package_schedule)
 admin.site.register(Exclusions)
+admin.site.register(Booking)
 

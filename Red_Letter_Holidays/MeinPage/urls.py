@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from .views import *
+from .adminuser import *
 from rest_framework.routers import DefaultRouter,SimpleRouter
 router=DefaultRouter()
 router.register('hotel',HotelView,base_name='Hotel')
@@ -57,12 +58,17 @@ package_schedule_spacific=Package_Schedule.as_view({
 	'patch':'partial_update',
 	'delete':'destroy'
 	})
+booking=UserBooking.as_view({
+	'get':'list',
+	'post':'create'
+	})
 
 
 
 urlpatterns = [
     
 	path('',Data.as_view(),name='index'),
+	path('booking/',booking,name='booking'),
 	path('packageschedule/<int:pk>/',package_schedule_spacific,name='packageschedulespacific'),
 	path('packageschedule/',package_schedule,name='packageschedule'),
 	path('register/',UserCreateAPIView.as_view(),name='user'),

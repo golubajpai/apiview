@@ -179,7 +179,7 @@ class PackageSerelizer(serializers.ModelSerializer):
 	class Meta:
 		model=Package
 		fields=('Package_name','Package_discription','exclusions','package_schedule','package_city','Country','Totel_price','Meal_included','Activities_include','Itnerary','Company_details'
-			,'Transfer_detail','Freebies','seperate_sic_or_private','image_package'
+			,'Transfer_private','Freebies','seperate_sic_or_private','image_package'
 			,'Start_date','End_date', 'Flight_inbound','Flight_outbound' ,'Flight_prise','Land_price','hotel')
 			
 

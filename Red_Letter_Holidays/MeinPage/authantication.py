@@ -91,4 +91,18 @@ class IsAdminOrReadOnly(BasePermission):
         except:
 
             return False
-           
+
+class Token_auth:
+    SAFE_METHODS = ['GET','POST',]
+    def has_permission(self,request,data):
+        if request.method in self.SAFE_METHODS:
+            try:
+                if request.data['token']:
+                    email=Token.objects.get(key=self.request.data['token'])
+                    objects=User.objects.get(email=email.email)
+                    import pdb;pdb.set_trace()
+            except:
+                import pdb;pdb.set_trace()
+                return False
+        return False
+
