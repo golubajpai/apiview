@@ -16,6 +16,32 @@ class Data(APIView):
 		name= UserObjects(data, many=True)
 		return Response(name.data)
 
+class CreateListModelMixin(object):
+
+    def get_serializer(self, *args, **kwargs):
+        """ if an array is passed, set serializer to many """
+        if isinstance(kwargs.get('data', {}), list):
+            kwargs['many'] = True
+        return super(CreateListModelMixin, self).get_serializer(*args, **kwargs)
+
+class Exclusion(viewsets.ModelViewSet):
+	permission_classes = (IsAdminOrReadOnly,)
+	serializer_class=exclusion_serailizers
+	queryset=Exclusions.objects.all()
+
+	def get_serializer(self, *args, **kwargs):
+		
+		#import pdb;pdb.set_trace()
+		if isinstance(kwargs.get('data', {}), list):
+			#import pdb;pdb.set_trace()
+			kwargs['many'] = True
+		return super(Exclusion, self).get_serializer(*args, **kwargs)
+
+
+
+
+			
+
 
 
 class UserCreateAPIView(CsrfExemptMixin,generics.CreateAPIView):
@@ -82,7 +108,7 @@ class Reset_Password(CsrfExemptMixin,APIView):
 		serelize.save(user=user_data,reset_token=str(x))
 		
 		message = Mail(
-		from_email='priyambajpai.liseinfotech@gmail.com',
+		from_email='golubajpai302@gmail.com',
 		to_emails=user_data.email,
 		subject='Reset Password',
 		html_content='<strong>your password opt is {}</strong>'.format(x))
@@ -120,12 +146,16 @@ class HotelView(viewsets.ModelViewSet):
 			return HotelSerelizerCreate
 		else:
 			return HotelSerelizer
+	def get_serializer(self, *args, **kwargs):
+		
+		#import pdb;pdb.set_trace()
+		if isinstance(kwargs.get('data', {}), list):
+			#import pdb;pdb.set_trace()
+			kwargs['many'] = True
+		return super(HotelView, self).get_serializer(*args, **kwargs)
 
-class HotelCityView(viewsets.ModelViewSet):
-	permission_classes=(IsAuthenticated,)
-	queryset=Hotel_cities.objects.all()
-	def get_serializer_class(self):
-		return HotelCitySeailizer
+
+
 
 
 
@@ -142,7 +172,7 @@ class Hotel_Image(viewsets.ModelViewSet):
 class PackageView(viewsets.ModelViewSet):
 	permission_classes = (IsAdminOrReadOnly,)
 	
-	serializer_class=PackageSerelizer
+	
 	pagination_class = LargeResultsSetPagination
 	paginate_by = 20
 
@@ -151,13 +181,27 @@ class PackageView(viewsets.ModelViewSet):
 		
 		if 'search' in self.request.GET:
 			a=self.request.GET['search']
-			import pdb;pdb.set_trace()
+			
 			queryset = Package.objects.filter(package_city__package_city__contains=a) | Package.objects.filter(Country__contains=a) | Package.objects.filter(Package_name__contains=a)
 			#import pdb;pdb.set_trace()
 			print(queryset)
 			return queryset
 		else:
 			return Package.objects.all()
+	def get_serializer_class(self):
+		x=['create','update','partial_update','destroy']
+		if self.action in x:
+			return Create_package_serailizers
+		else:
+			return PackageSerelizer
+	def get_serializer(self, *args, **kwargs):
+		
+		#import pdb;pdb.set_trace()
+		if isinstance(kwargs.get('data', {}), list):
+			#import pdb;pdb.set_trace()
+			kwargs['many'] = True
+		return super(PackageView,self).get_serializer(*args, **kwargs)
+
 
 
 
@@ -202,7 +246,18 @@ class Google_Facebook_login(APIView):
 }, status=status.HTTP_201_CREATED,headers={"Access-Control-Allow-Origin":"*"})
 
 			
+class Package_Schedule(viewsets.ModelViewSet):
+	permission_classes = (IsAdminOrReadOnly,)
+	serializer_class=Package_schedule_serailizers
+	queryset=Package_schedule.objects.all()
 
+	def get_serializer(self, *args, **kwargs):
+		
+		#import pdb;pdb.set_trace()
+		if isinstance(kwargs.get('data', {}), list):
+			#import pdb;pdb.set_trace()
+			kwargs['many'] = True
+		return super(Package_Schedule,self).get_serializer(*args, **kwargs)
 
 
 

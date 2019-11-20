@@ -45,12 +45,12 @@ for user in users:
 
 
 class LargeResultsSetPagination(pagination.PageNumberPagination):
-    page_size = 20
+    page_size = 1
     page_size_query_param = 'page_size'
     max_page_size = 10000
 
 class StandardResultsSetPagination(pagination.PageNumberPagination):
-    page_size = 100
+    page_size = 1
     page_size_query_param = 'page_size'
     max_page_size = 1000
 
@@ -60,27 +60,35 @@ class StandardResultsSetPagination(pagination.PageNumberPagination):
 
 
 class IsAdminOrReadOnly(BasePermission):
-    """
 
-    The request is authenticated as a user, or is a read-only request.
-    """
     SAFE_METHODS = ['GET']
 
     def has_permission(self, request, view):
         #import pdb;pdb.set_trace()
+        if request.method=='GET':
+            return True
+
         
         try:
-            data=request.data['token']
+            if type(request.data)!=list:
+                data=request.data['token']
+            else:
+                data=request.data[0]['token']
+            
+            
+            #import pdb;pdb.set_trace()
             superuser=Token.objects.get(key=data)
-            print(superuser.user)
+
+                
             superuser=Token.objects.get(key=data)
             y=User.objects.get(email=superuser.user)
             
-            if (request.method in self.SAFE_METHODS or (y.is_staff==True)):
+            if (request.method=='GET' or (y.is_staff==True)):
                     return True
             else:
                 False
         
         except:
+
             return False
-            raise exceptions.validationError('Only admin can access these method')
+           

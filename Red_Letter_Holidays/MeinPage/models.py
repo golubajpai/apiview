@@ -79,6 +79,8 @@ class Token_data(models.Model):
 
 class Hotel(models.Model):
     hotel_name=models.CharField(max_length=255)
+    hotel_city=models.CharField(max_length=255)
+    rating=models.CharField(max_length=255)
     hotel_address=models.CharField(max_length=255)
     room_type=models.CharField(max_length=255)
     inclusive=models.CharField(max_length=255)
@@ -90,9 +92,7 @@ class Hotel(models.Model):
 
     def __str__(self):
         return '%s: %s' % (self.hotel_name, self.hotel_address)
-class Hotel_cities(models.Model):
-    city_hotel=models.ForeignKey(Hotel,related_name='hotel_city',on_delete=models.CASCADE)
-    city_data=models.CharField(max_length=100)
+
     
 
 
@@ -105,13 +105,13 @@ class Package(models.Model):
     Flight_inbound=models.CharField(max_length=255)
     Flight_outbound=models.CharField(max_length=255)
     Flight_prise=models.CharField(max_length=255)
-    Land_prise=models.CharField(max_length=255)
-    Totel_prise=models.CharField(max_length=255)
+    Land_price=models.CharField(max_length=255)
+    Totel_price=models.CharField(max_length=255)
     Meal_included=models.CharField(max_length=255)
     Activities_include=models.CharField(max_length=255)
     Visa_included=models.CharField(max_length=255)
     Acivities_included=models.CharField(max_length=255)
-    Exclusive=models.CharField(max_length=255)
+    
     Meal_included=models.CharField(max_length=255)
     Itnerary=models.TextField()
     Company_details=models.CharField(max_length=255)
@@ -127,8 +127,16 @@ class Package(models.Model):
 
     def __str__(self):
         return (self.Package_name)
+class Exclusions(models.Model):
+    exclusion_package=models.ForeignKey(Package,related_name='exclusions',on_delete=models.CASCADE)
+    excelusion_data=models.CharField(max_length=200)
+class Package_schedule(models.Model):
+    days=models.CharField(max_length=255)
+    discription=models.CharField(max_length=255)
+    package=models.ForeignKey(Package,related_name='package_schedule',on_delete=models.CASCADE)
 class Package_city(models.Model):
     package_city_id=models.ForeignKey(Package,related_name='package_city',on_delete=models.CASCADE)
+    Package_city_image=models.ImageField()
     package_city=models.CharField(max_length=50)
 
 

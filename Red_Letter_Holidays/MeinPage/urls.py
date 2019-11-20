@@ -43,23 +43,28 @@ Hotel_image_spacific=Hotel_Image.as_view({
 
 
 	})
-hotel_city_get=HotelCityView.as_view({
-	'get':'list',
+exclusion=Exclusion.as_view({
 	'post':'create',
-
+	'get':'list'
 	})
-hotel_city=HotelCityView.as_view({
-	'get':'retrieve',
+
+package_schedule=Package_Schedule.as_view({
+	'post':'create',
+	'get':'list'
+	})
+package_schedule_spacific=Package_Schedule.as_view({
 	'put':'update',
 	'patch':'partial_update',
 	'delete':'destroy'
-
 	})
+
 
 
 urlpatterns = [
     
 	path('',Data.as_view(),name='index'),
+	path('packageschedule/<int:pk>/',package_schedule_spacific,name='packageschedulespacific'),
+	path('packageschedule/',package_schedule,name='packageschedule'),
 	path('register/',UserCreateAPIView.as_view(),name='user'),
 	path('login/',LoginData.as_view(),name='login'),
 	path('logout/',Logout.as_view(),name='logout'),
@@ -75,7 +80,6 @@ urlpatterns = [
 	path('hotelimagespacific/<int:pk>/',Hotel_image_spacific,name='gethotelimagespacific'),
 	path('gethotelimage/',Hotel_image,name='Gethotelimage'),
 	path('gethotelimage/<int:pk>/',Hotel_image_spacific,name='Gethotelimage'),
-	path('gethotelcity/<int:pk>/',hotel_city,name='Gethotelimage'),
-	path('gethotelcity/',hotel_city_get,name='Gethotelimage')
+	path('exclusion/',exclusion,name='Gethotelimage'),
 
 ]
