@@ -5,7 +5,9 @@ from .authantication import *
 
 
 
-
+class User(APIView):
+	def get(self,request):
+		return 
 
 
 class Data(APIView):
@@ -139,8 +141,9 @@ class Valid_token(APIView):
 class HotelView(viewsets.ModelViewSet):
 	
 	permission_classes = (IsAdminOrReadOnly,)
-	queryset=Hotel.objects.all()
+	queryset=Hotel.objects.filter(updated=False)
 	def get_serializer_class(self):
+
 		x=['create','update','partial_update','destroy']
 		if self.action in x:
 			return HotelSerelizerCreate
@@ -159,8 +162,12 @@ class HotelView(viewsets.ModelViewSet):
 
 
 
-	
 
+	
+class Transfet(viewsets.ModelViewSet):
+	permission_classes=(IsAdminOrReadOnly)
+	serializer_class=Transfer_sic_serelizer
+	queryset=Transfer_sic.objects.all()
 
 
 class Hotel_Image(viewsets.ModelViewSet):
@@ -182,12 +189,12 @@ class PackageView(viewsets.ModelViewSet):
 		if 'search' in self.request.GET:
 			a=self.request.GET['search']
 			
-			queryset = Package.objects.filter(package_city__package_city__contains=a) | Package.objects.filter(Country__contains=a) | Package.objects.filter(Package_name__contains=a)
+			queryset = Package.objects.filter(updated=False,package_city__package_city__contains=a) | Package.objects.filter(updated=False,Country__contains=a) | Package.objects.filter(Package_name__contains=a)
 			#import pdb;pdb.set_trace()
 			print(queryset)
 			return queryset
 		else:
-			return Package.objects.all()
+			return Package.objects.filter(updated=False)
 	def get_serializer_class(self):
 		x=['create','update','partial_update','destroy']
 		if self.action in x:
@@ -253,11 +260,17 @@ class Package_Schedule(viewsets.ModelViewSet):
 
 	def get_serializer(self, *args, **kwargs):
 		
-		#import pdb;pdb.set_trace()
+		
 		if isinstance(kwargs.get('data', {}), list):
-			#import pdb;pdb.set_trace()
+			
 			kwargs['many'] = True
 		return super(Package_Schedule,self).get_serializer(*args, **kwargs)
+
+		
+
+
+
+
 
 
 

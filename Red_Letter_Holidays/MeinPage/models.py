@@ -6,7 +6,6 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-
 class UserManager(BaseUserManager):
     """Define a model manager for User model with no username field."""
 
@@ -40,6 +39,7 @@ class UserManager(BaseUserManager):
             raise ValueError('Superuser must have is_superuser=True.')
 
         return self._create_user(email, password, **extra_fields)
+
 
 
 class User(AbstractUser):
@@ -87,6 +87,10 @@ class Hotel(models.Model):
     meal_type=models.CharField(max_length=255)
     amenities=models.CharField(max_length=255)
     price=models.CharField(max_length=255)
+    user=models.ForeignKey(User,null=True,blank=True, on_delete=models.CASCADE)
+    updated=models.BooleanField(default=False)
+    available=models.BooleanField(default=True)
+
     
     
 
@@ -94,28 +98,39 @@ class Hotel(models.Model):
         return '%s: %s' % (self.hotel_name, self.hotel_address)
 
     
+class Transfer_sic(models.Model):
+    transfer_sic_data=models.CharField(max_length=255)
+    available=models.BooleanField(default=True)
+class Transfer_private(models.Model):
+    transfer_private_data=models.CharField(max_length=255)
+    available=models.BooleanField(default=True )
+class Flight_inbound(models.Model):
+    flight_inbound=models.CharField(max_length=255)
+    available=models.BooleanField(default=True)
 
-
+class Flight_outbound(models.Model):
+    flight_outbound=models.CharField(max_length=255)
+    available=models.BooleanField(default=True)
 class Package(models.Model):
     Package_name=models.CharField(max_length=255)
     Package_discription=models.TextField()
     Country=models.CharField(max_length=255)
     Start_date=models.CharField(max_length=200)
     End_date=models.CharField(max_length=255)
-    Flight_inbound=models.CharField(max_length=255)
-    Flight_outbound=models.CharField(max_length=255)
+    Flight_inbound=models.ManyToManyField(Flight_inbound,related_name='flight_inbound_data')
+    Flight_outbound=models.ManyToManyField(Flight_outbound,related_name='Flight_outbound_data')
     Flight_prise=models.CharField(max_length=255)
     Land_price=models.CharField(max_length=255)
     Totel_price=models.CharField(max_length=255)
     Meal_included=models.CharField(max_length=255)
-    
+    transfer_sic=models.ManyToManyField(Transfer_sic,related_name='transfer_sic_of_package')
     Visa_included=models.CharField(max_length=255)
     
     
     Meal_included=models.CharField(max_length=255)
     Itnerary=models.TextField()
     Company_details=models.CharField(max_length=255)
-    Transfer_private=models.CharField(max_length=255)
+    Transfer_private=models.ManyToManyField(Transfer_private,related_name='transfer_private')
     Freebies=models.CharField(max_length=255)
     Transfer_detail_seperate=models.CharField(max_length=255)
     Transfesic=models.CharField(max_length=255)
@@ -124,19 +139,27 @@ class Package(models.Model):
     duration=models.CharField(max_length=255)
     hotel=models.ManyToManyField(Hotel,related_name='hotel')
     hot_deal_package=models.BooleanField()
+    user=models.ForeignKey(User,null=True,blank=True, on_delete=models.CASCADE)
+    updated=models.BooleanField(default=False)
+    
+   
+    
 
     def __str__(self):
         return (self.Package_name)
 
+
 class Activities(models.Model):
     package_id=models.ForeignKey(User,related_name='package_id',on_delete=models.CASCADE)
     activities=models.CharField(max_length=255)
+
 
 class Booking(models.Model):
     user=models.ForeignKey(User,related_name='userbooking',on_delete=models.CASCADE)
     package=models.ForeignKey(Package,related_name='packageforuser',on_delete=models.CASCADE)
     status=models.CharField(max_length=20,default='review')
     completed=models.BooleanField(default=False)
+    
 
 class Exclusions(models.Model):
     exclusion_package=models.ForeignKey(Package,related_name='exclusions',on_delete=models.CASCADE)
@@ -157,5 +180,22 @@ class HotelImage(models.Model):
 class PackageImage(models.Model):
     image_package=models.ForeignKey(Package,related_name='image_package',on_delete=models.CASCADE)
     image_data=models.ImageField()
+
+
+class AvailabilityoFhotel(models.Model):
+    booking=models.ForeignKey(Booking,related_name='booking', on_delete=models.CASCADE)
+    hotel_id=models.ForeignKey(Hotel,related_name='availhotel',on_delete=models.CASCADE)
+    hotel_availeble=models.BooleanField(default=True)
+    hotel_price=models.CharField(max_length=20,default='No Changes')
+
+class PriseOfPackage(models.Model):
+    booking=models.ForeignKey(Booking,related_name='bookingprise',on_delete=models.CASCADE)
+    totel_price=models.CharField(max_length=20,default='No Changes')
+
+
+
+
+
+
 
 

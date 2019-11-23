@@ -45,12 +45,12 @@ for user in users:
 
 
 class LargeResultsSetPagination(pagination.PageNumberPagination):
-    page_size = 1
+    page_size = 20
     page_size_query_param = 'page_size'
     max_page_size = 10000
 
 class StandardResultsSetPagination(pagination.PageNumberPagination):
-    page_size = 1
+    page_size = 20
     page_size_query_param = 'page_size'
     max_page_size = 1000
 
@@ -64,24 +64,25 @@ class IsAdminOrReadOnly(BasePermission):
     SAFE_METHODS = ['GET']
 
     def has_permission(self, request, view):
-        #import pdb;pdb.set_trace()
+        
         if request.method=='GET':
             return True
 
         
         try:
-            if type(request.data)!=list:
-                data=request.data['token']
-            else:
+            if type(request.data)==list:
                 data=request.data[0]['token']
+
+            else:
+                data=request.data['token']
+                #import pdb;pdb.set_trace()
+
             
             
             #import pdb;pdb.set_trace()
-            superuser=Token.objects.get(key=data)
+            y=Token.objects.get(key=data).user
 
                 
-            superuser=Token.objects.get(key=data)
-            y=User.objects.get(email=superuser.user)
             
             if (request.method=='GET' or (y.is_staff==True)):
                     return True
@@ -91,18 +92,43 @@ class IsAdminOrReadOnly(BasePermission):
         except:
 
             return False
+class Only_Admin:
+    def has_permission(self,request,data):
+        try:
+            if request.data['token']:
+                    User=Token.objects.get(key=request.data['token']).user
+                    
+                    if User.is_staff and User.is_superuser:
+
+                        return True
+                    else:
+                        return False
+
+            else:
+                return False
+        except:
+            return False
+
 
 class Token_auth:
     SAFE_METHODS = ['GET','POST',]
+    ADMIN_METHODS=['GET','POST','PUT','PATCH','DELETE']
     def has_permission(self,request,data):
-        if request.method in self.SAFE_METHODS:
+        if request.method :
             try:
                 if request.data['token']:
-                    email=Token.objects.get(key=self.request.data['token'])
-                    objects=User.objects.get(email=email.email)
-                    import pdb;pdb.set_trace()
+                    User=Token.objects.get(key=request.data['token']).user
+                    
+                    if User.is_staff and User.is_superuser and request.method in self.ADMIN_METHODS :
+
+                        return True
+                    if User and request.method in self.SAFE_METHODS:
+                        return True
+
+                    
             except:
-                import pdb;pdb.set_trace()
+                
                 return False
         return False
+
 

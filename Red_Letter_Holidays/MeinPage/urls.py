@@ -14,7 +14,8 @@ hotel_data=HotelView.as_view({
 	'get':'retrieve',
 	'put':'update',
 	'patch':'partial_update',
-	'delete':'destroy'
+	'delete':'destroy',
+
 
 	})
 package_list=PackageView.as_view({
@@ -62,13 +63,33 @@ booking=UserBooking.as_view({
 	'get':'list',
 	'post':'create'
 	})
+UpdateUserPackageurl=UpdateUserPackage.as_view({
+	'post':'create',
+	'get':'list'
+	})
+updateddata=Updateddata.as_view({
+	'get':'list'
+	})
 
+transfer_sic=Transfet.as_view({
+	'get':'list',
+	'post':'create'
+	})
 
-
+transfer_sic_spacific=Transfet.as_view({
+	'get':'retrieve',
+	'put':'update',
+	'patch':'partial_update',
+	'delete':'destroy'
+	})
 urlpatterns = [
     
 	path('',Data.as_view(),name='index'),
+	#path('getuser/',User.as_view())
+	path('transfer/',transfer_sic),
+	path('transfer/<int:pk>/',transfer_sic_spacific),
 	path('booking/',booking,name='booking'),
+	path('updateddata/',updateddata),
 	path('packageschedule/<int:pk>/',package_schedule_spacific,name='packageschedulespacific'),
 	path('packageschedule/',package_schedule,name='packageschedule'),
 	path('register/',UserCreateAPIView.as_view(),name='user'),
@@ -87,5 +108,6 @@ urlpatterns = [
 	path('gethotelimage/',Hotel_image,name='Gethotelimage'),
 	path('gethotelimage/<int:pk>/',Hotel_image_spacific,name='Gethotelimage'),
 	path('exclusion/',exclusion,name='Gethotelimage'),
+	path('updateuserhoteladmin/',UpdateUserPackageurl)
 
 ]

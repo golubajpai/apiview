@@ -143,43 +143,64 @@ class HotelImages(serializers.ModelSerializer):
 
 
 class HotelImageSerializer(serializers.ModelSerializer):
-	image_id=serializers.PrimaryKeyRelatedField(queryset=Hotel.objects.all(),source='image_hotel.id')
+	image_id=serializers.PrimaryKeyRelatedField(queryset=Hotel.objects.filter(updated=False),source='image_hotel.id')
 	class Meta:
 		model=HotelImage
 		fields=('image_data','image_id',)
 
 class PackageImage(serializers.ModelSerializer):
-	image_id=serializers.PrimaryKeyRelatedField(queryset=Package.objects.all(),source='image_package.id')
+	image_id=serializers.PrimaryKeyRelatedField(queryset=Package.objects.filter(updated=False),source='image_package.id')
 	class Meta:
 		model=HotelImage
 		fields=('image_data','image_id',)
 
 
 class HotelSerelizer(serializers.ModelSerializer):
-	hotel=serializers.PrimaryKeyRelatedField(queryset=Package.objects.all(),source='id')
+	hotel=serializers.PrimaryKeyRelatedField(queryset=Package.objects.filter(updated=False),source='id')
 	image_hotel=HotelImageSerializer(many=True)
 	
 	class Meta:
 		model=Hotel
-		fields=('hotel','hotel_name','hotel_city','hotel_address','room_type','inclusive','meal_type','amenities','price','image_hotel')		
+		fields=('hotel','rating','hotel_name','hotel_city','hotel_address','room_type','inclusive','meal_type','amenities','price','image_hotel','available')		
 
 class Package_city(serializers.ModelSerializer):
 	
 	class Meta:
 		model=Package_city
 		fields='__all__'
+
+class Flight_inbound_serailizer(serializers.ModelSerializer):
+	class Meta:
+		model=Flight_inbound
+		fields='__all__'
+class Flight_outbond_serailizer(serializers.ModelSerializer):
+	model=Flight_outbound
+	Fields='__all__'
+class Transfer_sic_serelizer(serializers.ModelSerializer):
+	class Meta:
+		model=Transfer_sic
+		fields="__all__"
+class Transfer_private_serailizer(serializers.ModelSerializer):
+	class Meta:
+		model=Transfer_private
+		fields='__all__'
 class PackageSerelizer(serializers.ModelSerializer):
 
 	hotel=HotelSerelizer(many=True)
+	Flight_inbound=Flight_outbond_serailizer(many=True)
 	package_schedule =Package_schedule_serailizers(many=True)
+	Flight_outbound=Flight_outbond_serailizer(many=True)
+
 	package_city=Package_city(many=True)
 	image_package=PackageImage(many=True)
 	exclusions=exclusion_serailizers(many=True)
+	transfer_sic=Transfer_sic_serelizer(many=True)
+	Transfer_private=Transfer_private_serailizer(many=True)
 
 	class Meta:
 		model=Package
-		fields=('Package_name','Package_discription','exclusions','package_schedule','package_city','Country','Totel_price','Meal_included','Activities_include','Itnerary','Company_details'
-			,'Transfer_private','Freebies','seperate_sic_or_private','image_package'
+		fields=('id','Package_name','Package_discription','Transfer_private','transfer_sic','Flight_inbound','Flight_outbound','exclusions','package_schedule','package_city','Country','Totel_price','Meal_included','Itnerary','Company_details'
+			,'Transfer_private','Freebies','image_package'
 			,'Start_date','End_date', 'Flight_inbound','Flight_outbound' ,'Flight_prise','Land_price','hotel')
 			
 
