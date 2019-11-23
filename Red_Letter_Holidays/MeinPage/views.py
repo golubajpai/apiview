@@ -160,7 +160,20 @@ class HotelView(viewsets.ModelViewSet):
 
 
 
+class Flight_inbond(viewsets.ModelViewSet):
+	permission_classes=(IsAdminOrReadOnly,)
+	serializer_class=Flight_inbound_serailizer
+	queryset=Flight_inbound.objects.all()
 
+class Flight_outbond(viewsets.ModelViewSet):
+	permission_classes=(IsAdminOrReadOnly,)
+	serializer_class=Flight_outbond_serailizer
+	queryset=Flight_outbound.objects.all()
+
+class Transfer_private(viewsets.ModelViewSet):
+	permission_classes=(IsAdminOrReadOnly)
+	serializer_class=Transfer_private_serailizer
+	queryset=Transfer_private.objects.all()
 
 
 	

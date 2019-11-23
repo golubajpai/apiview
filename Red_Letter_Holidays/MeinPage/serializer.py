@@ -174,8 +174,9 @@ class Flight_inbound_serailizer(serializers.ModelSerializer):
 		model=Flight_inbound
 		fields='__all__'
 class Flight_outbond_serailizer(serializers.ModelSerializer):
-	model=Flight_outbound
-	Fields='__all__'
+	class Meta:
+		model=Flight_outbound
+		fields='__all__'
 class Transfer_sic_serelizer(serializers.ModelSerializer):
 	class Meta:
 		model=Transfer_sic

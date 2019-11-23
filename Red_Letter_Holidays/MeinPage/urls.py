@@ -82,10 +82,36 @@ transfer_sic_spacific=Transfet.as_view({
 	'patch':'partial_update',
 	'delete':'destroy'
 	})
+flight_inbond=Flight_inbond.as_view({
+	'get':'list',
+	'post':'create'
+	})
+flight_inbond_retrive=Flight_inbond.as_view({
+	'get':'retrieve',
+	'put':'update',
+	'patch':'partial_update',
+	'delete':'destroy'
+})
+flight_outbond=Flight_outbond.as_view({
+	'get':'list',
+	'post':'create'
+
+	})
+flight_outbond_retraive=Flight_outbond.as_view({
+	'get':'retrieve',
+	'put':'update',
+	'patch':'partial_update',
+	'delete':'destroy'
+
+	})
 urlpatterns = [
     
 	path('',Data.as_view(),name='index'),
 	#path('getuser/',User.as_view())
+	path('flight_outbond/<int:pk>/',flight_outbond_retraive),
+	path('flight_outbond/',flight_outbond),
+	path('flight_inbond/<int:pk>/',flight_inbond_retrive),
+	path('flight_inbond',flight_inbond),
 	path('transfer/',transfer_sic),
 	path('transfer/<int:pk>/',transfer_sic_spacific),
 	path('booking/',booking,name='booking'),
