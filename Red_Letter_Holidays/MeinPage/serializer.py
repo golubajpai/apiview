@@ -188,9 +188,9 @@ class Transfer_private_serailizer(serializers.ModelSerializer):
 class PackageSerelizer(serializers.ModelSerializer):
 
 	hotel=HotelSerelizer(many=True)
-	Flight_inbound=Flight_outbond_serailizer(many=True)
+	Flight_inbound_data=Flight_inbound_serailizer(many=True)
 	package_schedule =Package_schedule_serailizers(many=True)
-	Flight_outbound=Flight_outbond_serailizer(many=True)
+	Flight_outbound_data=Flight_outbond_serailizer(many=True)
 
 	package_city=Package_city(many=True)
 	image_package=PackageImage(many=True)
@@ -200,9 +200,9 @@ class PackageSerelizer(serializers.ModelSerializer):
 
 	class Meta:
 		model=Package
-		fields=('id','Package_name','Package_discription','Transfer_private','transfer_sic','Flight_inbound','Flight_outbound','exclusions','package_schedule','package_city','Country','Totel_price','Meal_included','Itnerary','Company_details'
+		fields=('id','Package_name','Package_discription','Transfer_private','transfer_sic','Flight_inbound_data','Flight_outbound_data','exclusions','package_schedule','package_city','Country','Totel_price','Meal_included','Itnerary','Company_details'
 			,'Transfer_private','Freebies','image_package'
-			,'Start_date','End_date', 'Flight_inbound','Flight_outbound' ,'Flight_prise','Land_price','hotel')
+			,'Start_date','End_date','Flight_prise','Land_price','hotel')
 			
 
 

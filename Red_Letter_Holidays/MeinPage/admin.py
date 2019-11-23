@@ -13,4 +13,7 @@ admin.site.register(Package_schedule)
 admin.site.register(Exclusions)
 admin.site.register(Booking)
 admin.site.register(Transfer_sic)
+admin.site.register(Transfer_private)
+admin.site.register(Flight_inbound)
+admin.site.register(Flight_outbound)
 
