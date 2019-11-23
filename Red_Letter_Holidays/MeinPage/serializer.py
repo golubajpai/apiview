@@ -97,6 +97,27 @@ class UserLogin(serializers.ModelSerializer):
 			raise exceptions.ValidationError('fill all the fields')
 
 
+class AdminLogin(serializers.ModelSerializer):
+	email=serializers.CharField(max_length=50)
+	password=serializers.CharField(max_length=20)
+	class Meta:
+		model = User
+		fields = ('email','password')
+
+
+	def validate(self,data):
+		email=data.get('email')
+		password=data.get('password')
+		#import pdb ;pdb.set_trace()
+		if email and password:
+			auth=authenticate(email=email,password=password)
+			if auth.is_superuser and auth.is_staff:
+				return auth
+			else:
+				raise  exceptions.ValidationError('credentials invalid')
+		else:
+			raise exceptions.ValidationError('fill all the fields')
+
 
 class Reset(serializers.ModelSerializer):
 

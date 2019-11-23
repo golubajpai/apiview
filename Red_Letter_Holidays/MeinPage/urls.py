@@ -104,14 +104,15 @@ flight_outbond_retraive=Flight_outbond.as_view({
 	'delete':'destroy'
 
 	})
+
 urlpatterns = [
     
 	path('',Data.as_view(),name='index'),
-	#path('getuser/',User.as_view())
+	path('getuser/',GetUser.as_view()),
 	path('flight_outbond/<int:pk>/',flight_outbond_retraive),
 	path('flight_outbond/',flight_outbond),
 	path('flight_inbond/<int:pk>/',flight_inbond_retrive),
-	path('flight_inbond',flight_inbond),
+	path('flight_inbond/',flight_inbond),
 	path('transfer/',transfer_sic),
 	path('transfer/<int:pk>/',transfer_sic_spacific),
 	path('booking/',booking,name='booking'),
@@ -127,6 +128,7 @@ urlpatterns = [
 	path('packages/',package_list,name='packages'),
 	path('packages/<int:pk>/',packages_data,name='packages'),
 	path('viewhotel/<int:pk>/',hotel_data,name='viewhotel'),
+	path('adminlogin/',AdminLoginData.as_view(),name='adminlogin'),
 
 	path('sociallogin/',Google_Facebook_login.as_view(),name='sociallogin'),
 	path('getHotDeals/',get_hot_deals,name='Gethotdeals'),

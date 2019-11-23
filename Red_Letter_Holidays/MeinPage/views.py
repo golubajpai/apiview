@@ -74,6 +74,13 @@ class Logout(APIView):
 
 	
 
+class GetUser(APIView):
+	permission_classes=(Token_auth,)
+	
+	def get(self,request):
+		data=Token.objects.get(key=request.data['token']).user
+		y=UserObjects(data)
+		return Response({'userdata': y.data},status=status.HTTP_200_OK,headers={"Access-Control-Allow-Origin":"*"})
 
 class LoginData(APIView):
 	
@@ -91,7 +98,22 @@ class LoginData(APIView):
 		#import pdb;pdb.set_trace()
 		token, _ = Token.objects.get_or_create(user=objectuser)
 		return Response({'token':token.key,'message':'User login successfully'},status=status.HTTP_200_OK,headers={"Access-Control-Allow-Origin":"*"})
+class AdminLoginData(APIView):
+	
 
+
+
+	def post(self,request):
+
+		serelize=AdminLogin(data=request.data)
+		#import pdb; pdb.set_trace()
+		serelize.is_valid(raise_exception=True)
+		objectuser=serelize.validated_data
+		
+		
+		#import pdb;pdb.set_trace()
+		token, _ = Token.objects.get_or_create(user=objectuser)
+		return Response({'token':token.key,'message':'admin login successfully'},status=status.HTTP_200_OK,headers={"Access-Control-Allow-Origin":"*"})
 class Reset_Password(CsrfExemptMixin,APIView):
 	
 
@@ -165,15 +187,41 @@ class Flight_inbond(viewsets.ModelViewSet):
 	serializer_class=Flight_inbound_serailizer
 	queryset=Flight_inbound.objects.all()
 
+	def get_serializer(self, *args, **kwargs):
+		
+		#import pdb;pdb.set_trace()
+		if isinstance(kwargs.get('data', {}), list):
+			#import pdb;pdb.set_trace()
+			kwargs['many'] = True
+		return super(Flight_inbond, self).get_serializer(*args, **kwargs)
+
+
 class Flight_outbond(viewsets.ModelViewSet):
 	permission_classes=(IsAdminOrReadOnly,)
 	serializer_class=Flight_outbond_serailizer
 	queryset=Flight_outbound.objects.all()
+	def get_serializer(self, *args, **kwargs):
+		
+		#import pdb;pdb.set_trace()
+		if isinstance(kwargs.get('data', {}), list):
+			#import pdb;pdb.set_trace()
+			kwargs['many'] = True
+		return super(Flight_outbond, self).get_serializer(*args, **kwargs)
+
 
 class Transfer_private(viewsets.ModelViewSet):
 	permission_classes=(IsAdminOrReadOnly)
 	serializer_class=Transfer_private_serailizer
 	queryset=Transfer_private.objects.all()
+
+	def get_serializer(self, *args, **kwargs):
+		
+		#import pdb;pdb.set_trace()
+		if isinstance(kwargs.get('data', {}), list):
+			#import pdb;pdb.set_trace()
+			kwargs['many'] = True
+		return super(Transfer_private, self).get_serializer(*args, **kwargs)
+
 
 
 	
@@ -181,6 +229,14 @@ class Transfet(viewsets.ModelViewSet):
 	permission_classes=(IsAdminOrReadOnly)
 	serializer_class=Transfer_sic_serelizer
 	queryset=Transfer_sic.objects.all()
+	def get_serializer(self, *args, **kwargs):
+		
+		#import pdb;pdb.set_trace()
+		if isinstance(kwargs.get('data', {}), list):
+			#import pdb;pdb.set_trace()
+			kwargs['many'] = True
+		return super(Transfet, self).get_serializer(*args, **kwargs)
+
 
 
 class Hotel_Image(viewsets.ModelViewSet):
