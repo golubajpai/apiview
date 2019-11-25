@@ -19,7 +19,7 @@ from django.urls import path
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls import url
-from rest_framework_swagger.views import get_swagger_view
+
 
 
 
