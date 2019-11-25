@@ -63,6 +63,12 @@ booking=UserBooking.as_view({
 	'get':'list',
 	'post':'create'
 	})
+bookingupdate=UserBooking.as_view({
+	'get':'retrieve',
+	'put':'update',
+	'patch':'partial_update',
+	'delete':'destroy'
+	})
 UpdateUserPackageurl=UpdateUserPackage.as_view({
 	'post':'create',
 	'get':'list'
@@ -116,19 +122,21 @@ urlpatterns = [
 	path('transfer/',transfer_sic),
 	path('transfer/<int:pk>/',transfer_sic_spacific),
 	path('booking/',booking,name='booking'),
+	path('booking/<int:pk>/',bookingupdate,name='bookingupdate'),
 	path('updateddata/',updateddata),
 	path('packageschedule/<int:pk>/',package_schedule_spacific,name='packageschedulespacific'),
 	path('packageschedule/',package_schedule,name='packageschedule'),
 	path('register/',UserCreateAPIView.as_view(),name='user'),
 	path('login/',LoginData.as_view(),name='login'),
 	path('logout/',Logout.as_view(),name='logout'),
-	path('passwordreset/',Reset_Password.as_view(),name='resetpassword'),
+	path(' ',Reset_Password.as_view(),name='resetpassword'),
 	path('passwordconfirm/',Valid_token.as_view(),name='passwordconfirm'),
 	path('viewhotel/',hotel_list,name='viewhotel'),
 	path('packages/',package_list,name='packages'),
 	path('packages/<int:pk>/',packages_data,name='packages'),
 	path('viewhotel/<int:pk>/',hotel_data,name='viewhotel'),
 	path('adminlogin/',AdminLoginData.as_view(),name='adminlogin'),
+	path('verify_token/',Verify_token.as_view(),name='verify_token'),
 
 	path('sociallogin/',Google_Facebook_login.as_view(),name='sociallogin'),
 	path('getHotDeals/',get_hot_deals,name='Gethotdeals'),

@@ -50,4 +50,5 @@ class Updateddata(viewsets.ModelViewSet):
 	def get_queryset(self):
 		#import pdb;pdb.set_trace()
 		queryset=Package.objects.filter(updated=True,user=Token.objects.get(key=self.request.data['token']).user)
+		
 		return queryset

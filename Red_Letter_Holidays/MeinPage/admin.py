@@ -15,5 +15,6 @@ admin.site.register(Booking)
 admin.site.register(Transfer_sic)
 admin.site.register(Transfer_private)
 admin.site.register(Flight_inbound)
+admin.site.register(Token_data)
 admin.site.register(Flight_outbound)
 

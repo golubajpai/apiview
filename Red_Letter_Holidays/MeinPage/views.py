@@ -3,7 +3,23 @@ from .authantication import *
  
 
 
+import os
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
+message = Mail(
+    from_email='from_email@example.com',
+    to_emails='to@example.com',
+    subject='Sending with Twilio SendGrid is Fun',
+    html_content='<strong>and easy to do anywhere, even with Python</strong>')
+try:
+    sg = SendGridAPIClient('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')
+    response = sg.send(message)
+    print(response.status_code)
+    print(response.body)
+    print(response.headers)
+except Exception as e:
+    print(e.message)
 
 class User(APIView):
 	def get(self,request):
@@ -138,23 +154,32 @@ class Reset_Password(CsrfExemptMixin,APIView):
 		html_content='<strong>your password opt is {}</strong>'.format(x))
 		msg='reset password otp has been sent to this mail - {}'.format(user_data.email)
 		try:
-			sg = SendGridAPIClient('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')
+			sg = SendGridAPIClient('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')
 			sg.send(message)
 			return Response({"message sent":msg},status=status.HTTP_200_OK)
 
 		except Exception as e:
 			return Response({"message sent":'can not reset password right now'},status=404,headers={"Access-Control-Allow-Origin":"*"})
 		
-	
+class Verify_token(APIView):
+	def get(self,request):
+		y=Varify_token_serelizers(data=request.data)
+		y.is_valid(raise_exception=True)
+		return Response({'message':'enter your new password'},status=status.HTTP_200_OK,headers={"Access-Control-Allow-Origin":"*"})
 
 class Valid_token(APIView):
 	def post(self,request):
-		x=Reset_token(data=request.GET)
+		x=Reset_token(data=request.data)
 		x.is_valid(raise_exception=True)
 		validated=x.validated_data['user']
-		user_instance=validated.user
-		model=user_instance.set_password(x.validated_data['password'])
-		model.save()
+		user_instance=validated
+		user_instance.set_password(x.validated_data['new_password'])
+		user_instance.save()
+		to=x.validated_data['otp']
+		to.delete()
+
+		
+
 
 
 		return Response({'message':'password has been changed successfully'},status=status.HTTP_200_OK,headers={"Access-Control-Allow-Origin":"*"})

@@ -73,7 +73,7 @@ class Token_data(models.Model):
 
 
     def __str__(self):
-        return '%s: %s' % (self.Cities, self.Country)
+        return '%s: %s' % (self.email, self.reset_token)
 
 
 
@@ -133,7 +133,7 @@ class Package(models.Model):
     Transfer_private=models.ManyToManyField(Transfer_private,related_name='transfer_private')
     Freebies=models.CharField(max_length=255)
     Transfer_detail_seperate=models.CharField(max_length=255)
-    Transfesic=models.CharField(max_length=255)
+    
     discount=models.CharField(max_length=255)
     category=models.CharField(max_length=255)
     duration=models.CharField(max_length=255)

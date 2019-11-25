@@ -41,15 +41,18 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     
+    
      'django_rest_passwordreset',
      'sendgrid',
      'rest_framework_custom_exceptions',
-
+     'rest_framework_swagger',
 ]
+
 AUTH_USER_MODEL='MeinPage.User'
 
 REST_FRAMEWORK = {
-    'EXCEPTION_HANDLER': 'rest_framework_custom_exceptions.exceptions.simple_error_handler'
+    'EXCEPTION_HANDLER': 'rest_framework_custom_exceptions.exceptions.simple_error_handler',
+    
 }
 
 MIDDLEWARE = [
@@ -72,6 +75,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media') # 'data' is my media folder
 MEDIA_URL = '/media/'
 
 USE_TZ = False
+
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -143,5 +148,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
 
 

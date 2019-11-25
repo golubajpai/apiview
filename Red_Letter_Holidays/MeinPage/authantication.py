@@ -92,7 +92,7 @@ class IsAdminOrReadOnly(BasePermission):
         except:
 
             return False
-class Only_Admin:
+class Only_Admin(BasePermission):
     def has_permission(self,request,data):
         try:
             if request.data['token']:
@@ -110,10 +110,11 @@ class Only_Admin:
             return False
 
 
-class Token_auth:
-    SAFE_METHODS = ['GET','POST',]
-    ADMIN_METHODS=['GET','POST','PUT','PATCH','DELETE']
+class Token_auth(BasePermission):
+    SAFE_METHODS = ['GET','POST','PATCH']
+    ADMIN_METHODS=['GET','POST','PUT','PATCH']
     def has_permission(self,request,data):
+        #import pdb;pdb.set_trace()
         if request.method :
             try:
                 if request.data['token']:
@@ -122,7 +123,7 @@ class Token_auth:
                     if User.is_staff and User.is_superuser and request.method in self.ADMIN_METHODS :
 
                         return True
-                    if User and request.method in self.SAFE_METHODS:
+                    if request.method in self.SAFE_METHODS:
                         return True
 
                     

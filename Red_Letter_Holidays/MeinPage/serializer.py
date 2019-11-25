@@ -5,12 +5,25 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate, login
 from django.core import exceptions 
 import random
+from rest_framework.urlpatterns import format_suffix_patterns
 
 from .models import *
 
 
 
 User = get_user_model()
+
+class Varify_token_serelizers(serializers.Serializer):
+	password_token=serializers.CharField(max_length=200)
+	def validate(self,data):
+		token=data.get('password_token')
+		try:
+			data=Token_data.objects.get(reset_token=token)
+			x={'token':token}
+			return x
+		except:
+			raise  exceptions.ValidationError('invalid password token')
+
 class exclusion_serailizers(serializers.ModelSerializer):
 	class Meta:
 		model=Exclusions
@@ -140,18 +153,20 @@ class Reset(serializers.ModelSerializer):
 	def create(self, validated_data):
 		return Token_data.objects.create(**validated_data)
 
-class Reset_token(serializers.ModelSerializer):
-	class Meta:
-		model=Token_data
-		fields='__all__'
+class Reset_token(serializers.Serializer):
+	token=serializers.CharField(max_length=200)
+	password=serializers.CharField(max_length=200)
+	
 
 	def validate(self,data):
+		#import pdb;pdb.set_trace()
 		token=data.get('token')
 		password=data.get('password')
 		if token and password:
 			try:
 				x=Token_data.objects.get(reset_token=token)
-				user={'user':x.user,'new_password':password}
+				user={'user':x.user,'new_password':password,'otp':x}
+				
 				return user
 			except:
 				raise exceptions.ValidationError('invalid otp')
