@@ -5,6 +5,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+import datetime
 
 class UserManager(BaseUserManager):
     """Define a model manager for User model with no username field."""
@@ -111,17 +112,21 @@ class Flight_inbound(models.Model):
 class Flight_outbound(models.Model):
     flight_outbound=models.CharField(max_length=255)
     available=models.BooleanField(default=True)
+
+
+
+
 class Package(models.Model):
     Package_name=models.CharField(max_length=255)
     Package_discription=models.TextField()
     Country=models.CharField(max_length=255)
-    Start_date=models.CharField(max_length=200)
-    End_date=models.CharField(max_length=255)
+    Start_date=models.DateField()
+    End_date=models.DateField()
     Flight_inbound_data=models.ManyToManyField(Flight_inbound,related_name='flight_inbound_data')
     Flight_outbound_data=models.ManyToManyField(Flight_outbound,related_name='Flight_outbound_data')
     Flight_prise=models.CharField(max_length=255)
     Land_price=models.CharField(max_length=255)
-    Totel_price=models.CharField(max_length=255)
+    Totel_price=models.IntegerField()
     Meal_included=models.CharField(max_length=255)
     transfer_sic=models.ManyToManyField(Transfer_sic,related_name='transfer_sic_of_package')
     Visa_included=models.CharField(max_length=255)
@@ -134,6 +139,7 @@ class Package(models.Model):
     Freebies=models.CharField(max_length=255)
     Transfer_detail_seperate=models.CharField(max_length=255)
     
+    
     discount=models.CharField(max_length=255)
     category=models.CharField(max_length=255)
     duration=models.CharField(max_length=255)
@@ -141,12 +147,32 @@ class Package(models.Model):
     hot_deal_package=models.BooleanField()
     user=models.ForeignKey(User,null=True,blank=True, on_delete=models.CASCADE)
     updated=models.BooleanField(default=False)
+
+    days = models.PositiveIntegerField(
+        blank=True,
+        null=True,  # This value will be overwritten during save()
+        editable=False,  # Hides this field in the admin interface.
+    )
+
+    def save(self, *args, **kwargs):
+        # calculate sum before saving.
+        self.days = self.calculate_sum()
+        super(Package, self).save(*args, **kwargs)
+
+    def calculate_sum(self):
+        """ Calculate a numeric value for the model instance. """
+        try:
+            value_a = self.VALUES[self.field_a]
+            value_b = self.VALUES[self.field_b]
+            y=value_a - value_b
+            return y.days
+        except:
+             KeyError('unknown error')
+
+
     
    
     
-
-    def __str__(self):
-        return (self.Package_name)
 
 
 class Activities(models.Model):

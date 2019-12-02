@@ -52,8 +52,10 @@ AUTH_USER_MODEL='MeinPage.User'
 
 REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'rest_framework_custom_exceptions.exceptions.simple_error_handler',
+       'DATE_INPUT_FORMATS': ['iso-8601','%d-%m-%Y'],
     
 }
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

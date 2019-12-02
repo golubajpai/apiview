@@ -17,6 +17,8 @@ class UpdateUserHotelSerializer(serializers.ModelSerializer):
 		model=AvailabilityoFhotel
 		fields='__all__'
 
+
+
 '''class UpdatedData(serializers.ModelSerializer):
 	class Meta:
 		model=

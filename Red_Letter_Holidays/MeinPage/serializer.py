@@ -8,6 +8,7 @@ import random
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from .models import *
+from rest_framework import serializers, fields
 
 
 
@@ -110,6 +111,8 @@ class UserLogin(serializers.ModelSerializer):
 			raise exceptions.ValidationError('fill all the fields')
 
 
+
+
 class AdminLogin(serializers.ModelSerializer):
 	email=serializers.CharField(max_length=50)
 	password=serializers.CharField(max_length=20)
@@ -124,10 +127,11 @@ class AdminLogin(serializers.ModelSerializer):
 		#import pdb ;pdb.set_trace()
 		if email and password:
 			auth=authenticate(email=email,password=password)
-			if auth.is_superuser and auth.is_staff:
-				return auth
-			else:
-				raise  exceptions.ValidationError('credentials invalid')
+			try:
+				if auth.is_superuser and auth.is_staff:
+					return auth
+			except:
+					raise  exceptions.ValidationError('credentials invalid')
 		else:
 			raise exceptions.ValidationError('fill all the fields')
 
@@ -184,10 +188,10 @@ class HotelImageSerializer(serializers.ModelSerializer):
 		model=HotelImage
 		fields=('image_data','image_id',)
 
-class PackageImage(serializers.ModelSerializer):
+class PackageImageSere(serializers.ModelSerializer):
 	image_id=serializers.PrimaryKeyRelatedField(queryset=Package.objects.filter(updated=False),source='image_package.id')
 	class Meta:
-		model=HotelImage
+		model=PackageImage
 		fields=('image_data','image_id',)
 
 
@@ -224,19 +228,22 @@ class Transfer_private_serailizer(serializers.ModelSerializer):
 class PackageSerelizer(serializers.ModelSerializer):
 
 	hotel=HotelSerelizer(many=True)
+	Start_date=fields.DateField(input_formats=["%Y-%m-%d"])
+	End_date=fields.DateField(input_formats=["%Y-%m-%d"])
 	Flight_inbound_data=Flight_inbound_serailizer(many=True)
 	package_schedule =Package_schedule_serailizers(many=True)
 	Flight_outbound_data=Flight_outbond_serailizer(many=True)
+	packageImage=PackageImageSere(many=True)
 
 	package_city=Package_city(many=True)
-	image_package=PackageImage(many=True)
+	
 	exclusions=exclusion_serailizers(many=True)
 	transfer_sic=Transfer_sic_serelizer(many=True)
 	Transfer_private=Transfer_private_serailizer(many=True)
 
 	class Meta:
 		model=Package
-		fields=('id','Package_name','Package_discription','Transfer_private','transfer_sic','Flight_inbound_data','Flight_outbound_data','exclusions','package_schedule','package_city','Country','Totel_price','Meal_included','Itnerary','Company_details'
+		fields=('id','Package_name','packageImage','Package_discription','Transfer_private','transfer_sic','Flight_inbound_data','Flight_outbound_data','exclusions','package_schedule','package_city','Country','Totel_price','Meal_included','Itnerary','Company_details'
 			,'Transfer_private','Freebies','image_package'
 			,'Start_date','End_date','Flight_prise','Land_price','hotel')
 			

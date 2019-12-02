@@ -120,16 +120,13 @@ class AdminLoginData(APIView):
 
 
 	def post(self,request):
-
 		serelize=AdminLogin(data=request.data)
-		#import pdb; pdb.set_trace()
 		serelize.is_valid(raise_exception=True)
 		objectuser=serelize.validated_data
-		
-		
-		#import pdb;pdb.set_trace()
 		token, _ = Token.objects.get_or_create(user=objectuser)
 		return Response({'token':token.key,'message':'admin login successfully'},status=status.HTTP_200_OK,headers={"Access-Control-Allow-Origin":"*"})
+
+
 class Reset_Password(CsrfExemptMixin,APIView):
 	
 
@@ -278,15 +275,27 @@ class PackageView(viewsets.ModelViewSet):
 	paginate_by = 20
 
 
-	def get_queryset(self):
+	def get_queryset(self,*args,**kwargs):
 		
 		if 'search' in self.request.GET:
 			a=self.request.GET['search']
+			import pdb;pdb.set_trace()
 			
 			queryset = Package.objects.filter(updated=False,package_city__package_city__contains=a) | Package.objects.filter(updated=False,Country__contains=a) | Package.objects.filter(Package_name__contains=a)
-			#import pdb;pdb.set_trace()
-			print(queryset)
+			
+			
 			return queryset
+		if 'prise' in self.request.GET:
+			x,y=(self.request.GET['prise']).split(",")
+			x=('SELECT * From MeinPage_Package where  Totel_price BETWEEN {} and {} and updated=False').format(int(x),int(y))
+			queryset=Package.objects.raw(x)
+			return queryset
+		if 'days' in self.request.GET:
+			x,y=(self.request.GET['days']).split(",")
+			x=('SELECT * From MeinPage_Package where  days BETWEEN {} and {} and updated=False').format(int(x),int(y))
+			queryset=Package.objects.raw(x)
+			return queryset
+			
 		else:
 			return Package.objects.filter(updated=False)
 	def get_serializer_class(self):
@@ -359,6 +368,19 @@ class Package_Schedule(viewsets.ModelViewSet):
 			
 			kwargs['many'] = True
 		return super(Package_Schedule,self).get_serializer(*args, **kwargs)
+
+class PackageImageView(viewsets.ModelViewSet):
+	permission_classes=(IsAdminOrReadOnly,)
+	serializer_class=PackageImageSere
+	queryset=PackageImage.objects.all()
+
+	def get_serializer(self, *args, **kwargs):
+		
+		
+		if isinstance(kwargs.get('data', {}), list):
+			
+			kwargs['many'] = True
+		return super(PackageImageView,self).get_serializer(*args, **kwargs)
 
 		
 

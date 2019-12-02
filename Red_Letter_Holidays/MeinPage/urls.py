@@ -110,6 +110,18 @@ flight_outbond_retraive=Flight_outbond.as_view({
 	'delete':'destroy'
 
 	})
+pakageimage1=PackageImageView.as_view({
+	'get':'retrieve',
+	'put':'update',
+	'patch':'partial_update',
+	'delete':'destroy'
+
+	})
+pakageimage2=PackageImageView.as_view({
+	'get':'list',
+	'post':'create'
+
+	})
 
 urlpatterns = [
     
@@ -129,7 +141,7 @@ urlpatterns = [
 	path('register/',UserCreateAPIView.as_view(),name='user'),
 	path('login/',LoginData.as_view(),name='login'),
 	path('logout/',Logout.as_view(),name='logout'),
-	path(' ',Reset_Password.as_view(),name='resetpassword'),
+	path('restpassword/',Reset_Password.as_view(),name='resetpassword'),
 	path('passwordconfirm/',Valid_token.as_view(),name='passwordconfirm'),
 	path('viewhotel/',hotel_list,name='viewhotel'),
 	path('packages/',package_list,name='packages'),
@@ -137,6 +149,8 @@ urlpatterns = [
 	path('viewhotel/<int:pk>/',hotel_data,name='viewhotel'),
 	path('adminlogin/',AdminLoginData.as_view(),name='adminlogin'),
 	path('verify_token/',Verify_token.as_view(),name='verify_token'),
+	path('packageimage/',pakageimage2),
+	path('packageimage/<int:pk>',pakageimage1),
 
 	path('sociallogin/',Google_Facebook_login.as_view(),name='sociallogin'),
 	path('getHotDeals/',get_hot_deals,name='Gethotdeals'),
