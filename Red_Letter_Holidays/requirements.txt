@@ -9,7 +9,7 @@ django-rest-passwordreset==1.0.0
 djangorestframework==3.10.3
 idna==2.8
 oauthlib==3.1.0
-Pillow==6.2.1
+Pillow==9.3.0
 python-http-client==3.2.1
 python3-openid==3.1.0
 pytz==2019.3
